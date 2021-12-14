@@ -1,0 +1,21 @@
+{
+  "name": "nftmarket-01-tothemoon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:server":"node ./server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codestates/NFTMarket-01-ToTheMoon.git"
+  },
+  "author": "mindol8, ms123, kgd7054",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/codestates/NFTMarket-01-ToTheMoon/issues"
+  },
+  "homepage": "https://github.com/codestates/NFTMarket-01-ToTheMoon#readme"
+}
