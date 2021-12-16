@@ -22,8 +22,6 @@ import { Nav } from "reactstrap";
 // javascript plugin used to create scrollbars on windows
 import PerfectScrollbar from "perfect-scrollbar";
 
-import logo from "logo-white.svg";
-
 var ps;
 
 function Sidebar(props) {
@@ -53,16 +51,14 @@ function Sidebar(props) {
           className="simple-text logo-mini"
           target="_blank"
         >
-          <div className="logo-img">
-            <img src={logo} alt="react-logo" />
-          </div>
+
         </a>
         <a
           href="https://www.creative-tim.com?ref=nudr-sidebar"
           className="simple-text logo-normal"
           target="_blank"
         >
-          Creative Tim
+          Menu
         </a>
       </div>
       <div className="sidebar-wrapper" ref={sidebar}>

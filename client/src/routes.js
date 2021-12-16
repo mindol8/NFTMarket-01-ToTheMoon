@@ -17,7 +17,7 @@
 */
 import Dashboard from "views/Dashboard.js";
 import Notifications from "views/Notifications.js";
-import Icons from "views/Icons.js";
+import Create from "views/Create.js";
 import Typography from "views/Typography.js";
 import TableList from "views/TableList.js";
 import Maps from "views/Maps.js";
@@ -33,10 +33,10 @@ var dashRoutes = [
     layout: "/admin",
   },
   {
-    path: "/icons",
-    name: "Icons",
+    path: "/create",
+    name: "Create",
     icon: "design_image",
-    component: Icons,
+    component: Create,
     layout: "/admin",
   },
   {
