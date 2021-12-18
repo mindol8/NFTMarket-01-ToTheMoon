@@ -23,8 +23,8 @@ import PerfectScrollbar from "perfect-scrollbar";
 import { Route, Switch, Redirect, useLocation } from "react-router-dom";
 
 // core components
-import DemoNavbar from "components/Navbars/DemoNavbar.js";
-import Footer from "components/Footer/Footer.js";
+//import DemoNavbar from "components/Navbars/DemoNavbar.js";
+//import Footer from "components/Footer/Footer.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
 //import FixedPlugin from "components/FixedPlugin/FixedPlugin.js";
 
@@ -60,7 +60,7 @@ function Admin(props) {
     <div className="wrapper">
       <Sidebar {...props} routes={routes} backgroundColor={backgroundColor} />
       <div className="main-panel" ref={mainPanel}>
-        <DemoNavbar {...props} />
+
         <Switch>
           {routes.map((prop, key) => {
             return (
@@ -73,7 +73,7 @@ function Admin(props) {
           })}
           <Redirect from="/admin" to="/admin/dashboard" />
         </Switch>
-        <Footer fluid />
+
       </div>
 
     </div>

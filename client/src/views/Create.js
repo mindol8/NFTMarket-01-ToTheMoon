@@ -20,33 +20,76 @@ import React, { useEffect, useRef, useState } from "react";
 // reactstrap components
 import { Card, CardHeader, CardBody } from "reactstrap";
 import fileImg from "../assets/img/create-insert-file.jpg";
+import { minting, getContract } from "../models/create/erc721/index.js";
+import Web3 from 'web3';
+import { getMetaMask, getKaikas } from "../models/getWallet";
 import "../assets/css/custermized.css";
 // core components
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
 
 const Create = () => {
+  const [file, setFile] = useState(null);
   const [name, setName] = useState("");
   const [link, setLink] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
   const [chain, setChain] = useState("");
+  const [collection, setCollection] = useState("");
   const blockChainList = ["Ethereum", "Klaytn"];
-  const EthereumTypeList = ["ERC-721", "ERC-1155"];
-  const KlaytnTypeList = ["KIP-17"];
+  const ethereumTypeList = ["ERC-721", "ERC-1155"];
+  const klaytnTypeList = ["KIP-17"];
 
   const fileUploader = useRef(null);
+  const [web3, setWeb3] = useState();
+  useEffect(() => {
+    if (typeof window.ethereum !== "undefined") { // window.ethereum이 있다면
+      try {
+        const web = new Web3(window.ethereum);  // 새로운 web3 객체를 만든다
+        setWeb3(web);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }, []);
   const handleClick = (e) => {
     fileUploader.current.click();
   }
   const handleChange = (e) => {
     const maxSize = 100 * 1024 * 1024;
-    const fileUploaded = e.target.files[0];
-    if (fileUploaded.size > maxSize) {
+
+    if (e.target.files[0].size > maxSize) {
       alert("첨부파일 사이즈는 100MB 이내로 등록 가능합니다.")
     } else {
       //add file handler
+      //console.log(e.target.files[0]);
+      setFile(e.target.files[0]);
     }
 
+  }
+
+  const checkElement = () => {
+    if (name && file && type && chain && collection) {
+      return true;
+    }
+    return false;
+  }
+
+  const onClickBtn = async (e) => {
+    e.preventDefault();
+    if (checkElement()) {
+      //minting.
+      const account = await getMetaMask();
+      const nftContract = getContract();
+      const newNftTokenURI = await minting(account, nftContract);
+      /*
+        1. ipfs에 이미지 파일 등록
+        2.heroku요청을 tokenURI로 nft입력정보 db에 넣음
+        
+      */
+
+    } else {
+      alert("필수항목을 모두 채워주세요.")
+    }
   }
   return (
     <>
@@ -61,7 +104,7 @@ const Create = () => {
             <div className="item-data-form">File types supported: JPG, PNG, GIF, SVG, MP4, WEBM, MP3, WAV, OGG, GLB, GLTF. Max size: 100 MB</div>
             <div className="input-box">
               <div className="input-box-file" onClick={handleClick}>
-                <img src={fileImg} alt="no img" className="input-box-file-img" />
+                <img src={file ? URL.createObjectURL(file) : fileImg} alt="no img" className={file ? "input-box-file-img-change" : "input-box-file-img"} />
                 <input
                   type="file"
                   ref={fileUploader}
@@ -90,14 +133,40 @@ const Create = () => {
 
             <div className="item-element">
               <div className="element-label">Block chain<sup className="sup-red">*</sup></div>
-              <select name="type" value={chain} onChange={(e) => setChain(e.target.value)} className="element-input" >
-                <option> </option>
+              <select name="blockchain" value={chain} onChange={(e) => setChain(e.target.value)} className="element-input" >
+                <option value=""> </option>
                 {blockChainList.map((el, index) => {
-                  <option key={index} value={el}>el</option>
+                  return <option key={index} value={el}>{el}</option>
                 })}
               </select>
             </div>
 
+            <div className="item-element">
+              <div className="element-label">Type<sup className="sup-red">*</sup></div>
+              <select name="type" value={type} onChange={(e) => setType(e.target.value)} className="element-input" >
+                <option value=""> </option>
+                {chain === "" ? <option value=""> </option> :
+                  chain === "Ethereum" ? ethereumTypeList.map((el, index) => {
+                    return <option key={index} value={el}>{el}</option>
+                  })
+                    :
+                    klaytnTypeList.map((el, index) => {
+                      return <option key={index} value={el}>{el}</option>
+                    })
+                }
+              </select>
+            </div>
+
+            <div className="item-element">
+              <div className="element-label">Collection<sup className="sup-red">*</sup></div>
+              <select name="collection" value={collection} onChange={(e) => setCollection(e.target.value)} className="element-input" >
+                <option value=""></option>
+                <option value="testSet">testSet</option>
+              </select>
+            </div>
+            <div className="item-element">
+              <input type="button" value="create" className="element-btn" onClick={onClickBtn} />
+            </div>
           </CardBody>
         </Card>
       </div>

@@ -46,20 +46,11 @@ function Sidebar(props) {
   return (
     <div className="sidebar" data-color={props.backgroundColor}>
       <div className="logo">
-        <a
-          href="https://www.creative-tim.com?ref=nudr-sidebar"
-          className="simple-text logo-mini"
-          target="_blank"
-        >
 
-        </a>
-        <a
-          href="https://www.creative-tim.com?ref=nudr-sidebar"
-          className="simple-text logo-normal"
-          target="_blank"
-        >
-          Menu
-        </a>
+        <div className="simple-text logo-normal" >
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          To The Moon
+        </div>
       </div>
       <div className="sidebar-wrapper" ref={sidebar}>
         <Nav>

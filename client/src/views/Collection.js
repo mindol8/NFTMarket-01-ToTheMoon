@@ -15,33 +15,31 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import Dashboard from "views/Dashboard.js";
-import Create from "views/Create.js";
-import Mypage from "views/Mypage.js";
+import React from "react";
 
-var dashRoutes = [
-  {
-    path: "/dashboard",
-    name: "Home",
-    icon: "design_app",
-    component: Dashboard,
-    layout: "/admin",
-  },
-  {
-    path: "/create",
-    name: "Create",
-    icon: "design_image",
-    component: Create,
-    layout: "/admin",
-  },
-  {
-    path: "/mypage",
-    name: "My page",
-    icon: "users_single-02",
-    component: Mypage,
-    layout: "/admin",
-  },
+// reactstrap components
+import { Row, Col, Card, CardHeader, CardBody } from "reactstrap";
+import "../assets/css/custermized.css";
+// core components
+import PanelHeader from "components/PanelHeader/PanelHeader.js";
 
+function FullScreenMap() {
+  return (
+    <>
+      <PanelHeader size="sm" />
+      <div className="content">
+        <Card>
+          <CardHeader>
+            <h5 className="title">Collection</h5>
 
-];
-export default dashRoutes;
+          </CardHeader>
+          <CardBody>
+
+          </CardBody>
+        </Card>
+      </div>
+    </>
+  );
+}
+
+export default FullScreenMap;

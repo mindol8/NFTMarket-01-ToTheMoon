@@ -80,7 +80,7 @@ function Notifications() {
       <PanelHeader
         content={
           <div className="header text-center">
-            <h2 className="title">Notifications</h2>
+            <h2 className="title">My Page</h2>
             <p className="category">
               Please Checkout{" "}
               <a
@@ -107,14 +107,14 @@ function Notifications() {
                 <Alert color="info">
                   <span>This is a plain notification</span>
                 </Alert>
-                <Alert color="info" isOpen={true} toggle={() => {}}>
+                <Alert color="info" isOpen={true} toggle={() => { }}>
                   <span>This is a notification with close button.</span>
                 </Alert>
                 <Alert
                   color="info"
                   className="alert-with-icon"
                   isOpen={true}
-                  toggle={() => {}}
+                  toggle={() => { }}
                 >
                   <span
                     data-notify="icon"
@@ -128,7 +128,7 @@ function Notifications() {
                   color="info"
                   className="alert-with-icon"
                   isOpen={true}
-                  toggle={() => {}}
+                  toggle={() => { }}
                 >
                   <span
                     data-notify="icon"
@@ -150,31 +150,31 @@ function Notifications() {
                 <CardTitle tag="h4">Notification states</CardTitle>
               </CardHeader>
               <CardBody>
-                <Alert color="primary" isOpen={true} toggle={() => {}}>
+                <Alert color="primary" isOpen={true} toggle={() => { }}>
                   <span>
                     <b> Primary - </b> This is a regular notification made with
                     color="primary"
                   </span>
                 </Alert>
-                <Alert color="info" isOpen={true} toggle={() => {}}>
+                <Alert color="info" isOpen={true} toggle={() => { }}>
                   <span>
                     <b> Info - </b> This is a regular notification made with
                     color="info"
                   </span>
                 </Alert>
-                <Alert color="success" isOpen={true} toggle={() => {}}>
+                <Alert color="success" isOpen={true} toggle={() => { }}>
                   <span>
                     <b> Success - </b> This is a regular notification made with
                     color="success"
                   </span>
                 </Alert>
-                <Alert color="warning" isOpen={true} toggle={() => {}}>
+                <Alert color="warning" isOpen={true} toggle={() => { }}>
                   <span>
                     <b> Warning - </b> This is a regular notification made with
                     color="warning"
                   </span>
                 </Alert>
-                <Alert color="danger" isOpen={true} toggle={() => {}}>
+                <Alert color="danger" isOpen={true} toggle={() => { }}>
                   <span>
                     <b> Danger - </b> This is a regular notification made with
                     color="danger"
