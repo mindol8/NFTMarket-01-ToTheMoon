@@ -34,7 +34,7 @@ const Create = () => {
   const [description, setDescription] = useState("");
   const [type, setType] = useState("");
   const [chain, setChain] = useState("");
-  const [collection, setCollection] = useState("");
+  // const [collection, setCollection] = useState("");
   const blockChainList = ["Ethereum", "Klaytn"];
   const ethereumTypeList = ["ERC-721", "ERC-1155"];
   const klaytnTypeList = ["KIP-17"];
@@ -156,14 +156,16 @@ const Create = () => {
                 }
               </select>
             </div>
-
-            <div className="item-element">
+            {/*
+                <div className="item-element">
               <div className="element-label">Collection<sup className="sup-red">*</sup></div>
               <select name="collection" value={collection} onChange={(e) => setCollection(e.target.value)} className="element-input" >
                 <option value=""></option>
                 <option value="testSet">testSet</option>
               </select>
             </div>
+                */}
+
             <div className="item-element">
               <input type="button" value="create" className="element-btn" onClick={onClickBtn} />
             </div>
