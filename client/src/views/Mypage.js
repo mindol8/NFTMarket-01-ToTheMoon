@@ -114,6 +114,22 @@ const myPage = () => {
                             <div>
                               <label>Name:&nbsp;</label>{el.name}
                             </div>
+                            <div className="main-btn-set">
+                              <div className="main-btn-set-element main-btn-set-element-rightspace">
+                                <input type="button" value="Detail" className="element-btn" onClick={(e) => {
+                                  e.preventDefault();
+
+                                }} />
+                              </div>
+
+                              <div className="main-btn-set-element">
+                                <input type="button" value="Sale" className="element-btn" onClick={(e) => {
+                                  e.preventDefault();
+
+                                }} />
+                              </div>
+
+                            </div>
 
 
                           </div>

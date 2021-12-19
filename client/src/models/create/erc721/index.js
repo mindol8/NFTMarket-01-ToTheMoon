@@ -35,12 +35,12 @@ const transferToken = async (to, from, tokenId, web3) => {
     }
 }
 const ownerOfToken = async (tokenId, address, web3) => {
-    console.log(web3);
+    //console.log(web3);
     const checkSumAddress = web3.utils.toChecksumAddress(address);
     try {
         const contract = await newContract(web3, checkSumAddress);
-        console.log(contract)
-        return await contract.methods.ownerOf(tokenId).call();
+        // console.log(contract)
+        return await web3.utils.toChecksumAddress(await contract.methods.ownerOf(tokenId).call());
     } catch (error) {
         console.log(error);
         return false;

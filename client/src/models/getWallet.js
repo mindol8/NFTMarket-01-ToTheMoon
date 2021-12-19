@@ -28,4 +28,6 @@ const getKaikas = async () => {
     return false;
 };
 
+
+
 export { getKaikas, getMetaMask }

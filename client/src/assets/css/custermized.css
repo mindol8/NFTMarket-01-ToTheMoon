@@ -40,7 +40,18 @@
 .width-full{
     width:100%!important;
 }
-
+.main-btn-set{
+    margin-top:0.25rem;
+    display: flex;
+    justify-content: center;
+}
+.main-btn-set-element{
+    flex-basis: 0;
+    width:33.333%;
+}
+.main-btn-set-element-rightspace{
+    margin-right:2rem;
+}
 .item-element{
     margin-top:2rem;
 }

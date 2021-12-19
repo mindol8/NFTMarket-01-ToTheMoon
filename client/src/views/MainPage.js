@@ -14,6 +14,7 @@ import {
 
 // core components
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
+import pay from "../models/pay/index.js";
 import "../assets/css/custermized.css";
 import tempImg from "../assets/img/bg1.jpg";
 import { getContract, ownerOfToken, transferToken } from "../models/create/erc721/index.js";
@@ -33,20 +34,30 @@ const mainPage = () => {
     { name: "nft5", img: tempImg, address: "0x7E1960D66FD665ef2B0e94051fE9D74F86637c15" },
     { name: "nft6", img: tempImg, address: "0x7E1960D66FD665ef2B0e94051fE9D74F86637c15" }]
   );
-  const buyNFT = async (tokenId, owner) => {
+  const buyNFT = async (tokenId, owner, price) => {
     const account = await getMetaMask();
     const tokenContract = getContract();
     const ownerOfNFT = await ownerOfToken(tokenId, account, tokenContract);
-    alert(ownerOfNFT);
-    if (ownerOfNFT === owner) {
-      const transfer = await transferToken(account, owner, tokenId, tokenContract);
-      if (transfer) {
-        alert("성공적으로 구매 했습니다.");
-        //metadata 수정
-      }
+    if (ownerOfNFT === tokenContract.utils.toChecksumAddress(account)) {
+      alert("본인 소유 NFT는 구매하실 수 없습니다.");
     } else {
-      alert("이미 판매가 완료된 NFT입니다.");
+      if (ownerOfNFT === owner) {
+        if (!await pay(owner, account, price)) {
+          alert("송금에 실패했습니다.");
+          return;
+        }
+        const transfer = await transferToken(account, owner, tokenId, tokenContract);
+        if (transfer) {
+          alert("성공적으로 구매 했습니다.");
+          //metadata 수정
+        } else {
+          alert("구매 실패 했습니다.");
+        }
+      } else {
+        alert("이미 판매가 완료된 NFT입니다.");
+      }
     }
+
   }
   return (
     <>
@@ -131,13 +142,25 @@ const mainPage = () => {
                               <label>Price:&nbsp;</label>
 
                             </div>
-                            <div className="item-element">
-                              <input type="button" value="BUY" className="element-btn" onClick={(e) => {
-                                e.preventDefault();
-                                return buyNFT(2, el.address);
-                              }} />
+                            <div className="main-btn-set">
+                              <div className="main-btn-set-element main-btn-set-element-rightspace">
+                                <input type="button" value="Detail" className="element-btn" onClick={(e) => {
+                                  e.preventDefault();
+
+                                }} />
+                              </div>
+
+                              <div className="main-btn-set-element">
+                                <input type="button" value="BUY" className="element-btn" onClick={(e) => {
+                                  e.preventDefault();
+                                  return buyNFT(el.tokenId, el.address, el.price);
+                                }} />
+                              </div>
+
                             </div>
                           </div>
+
+
                         </CardBody>
                       </CardHeader>
                     </Card>
