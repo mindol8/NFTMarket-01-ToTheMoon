@@ -15,16 +15,16 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import Dashboard from "views/Dashboard.js";
+import MainPage from "views/MainPage.js";
 import Create from "views/Create.js";
 import Mypage from "views/Mypage.js";
 
 var dashRoutes = [
   {
-    path: "/dashboard",
+    path: "/mainpage",
     name: "Home",
     icon: "design_app",
-    component: Dashboard,
+    component: MainPage,
     layout: "/admin",
   },
   {

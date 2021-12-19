@@ -37,6 +37,10 @@
     
 }
 
+.width-full{
+    width:100%!important;
+}
+
 .item-element{
     margin-top:2rem;
 }
@@ -68,4 +72,26 @@
 
 .element-btn:hover{
     background-color: lightgray;
+}
+
+.sort-list{
+    font-size: 0.75rem;
+    font-weight: bolder;
+}
+
+.nft-market-img{
+    width:100%;
+    height:75%;
+    padding-bottom:0.5rem;
+    border-bottom:0.25rem dashed lightgray;
+}
+
+.padding-none{
+    box-sizing: border-box;
+    padding:0!important;
+}
+
+.nft-market-item{
+    padding-top:0.25rem;
+    padding-bottom:0.25rem;
 }

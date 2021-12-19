@@ -1,38 +1,24 @@
-/*!
-
-=========================================================
-* Now UI Dashboard React - v1.5.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/now-ui-dashboard-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/now-ui-dashboard-react/blob/main/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 
 // reactstrap components
 import {
-  Row,
-  Col,
   Card,
   CardTitle,
   CardBody,
   CardHeader,
+  Row,
+  Col
+
 } from "reactstrap";
 
 // core components
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
 import "../assets/css/custermized.css";
 import tempImg from "../assets/img/bg1.jpg";
-const myPage = () => {
+import { getContract, ownerOfToken, transferToken } from "../models/create/erc721/index.js";
+import { getMetaMask, getKaikas } from "../models/getWallet";
+const mainPage = () => {
   const [type, setType] = useState("all");
   const [chain, setChain] = useState("all");
   const [option, setOption] = useState("htl");//high to low
@@ -40,37 +26,53 @@ const myPage = () => {
   const ethereumTypeList = ["ERC-721", "ERC-1155"];
   const klaytnTypeList = ["KIP-17"];
   const [NFTList, setNFTList] = useState([
-    { name: "nft1", img: tempImg, address: "0x1234" },
-    { name: "nft2", img: tempImg },
-    { name: "nft3", img: tempImg },
-    { name: "nft4", img: tempImg },
-    { name: "nft5", img: tempImg },
-    { name: "nft6", img: tempImg }]
+    { name: "nft1", img: tempImg, address: "0x2C920dF1BF286bcCe7768c240D63F2aD27080757" },
+    { name: "nft2", img: tempImg, address: "0x7E1960D66FD665ef2B0e94051fE9D74F86637c15" },
+    { name: "nft3", img: tempImg, address: "0x7E1960D66FD665ef2B0e94051fE9D74F86637c15" },
+    { name: "nft4", img: tempImg, address: "0x7E1960D66FD665ef2B0e94051fE9D74F86637c15" },
+    { name: "nft5", img: tempImg, address: "0x7E1960D66FD665ef2B0e94051fE9D74F86637c15" },
+    { name: "nft6", img: tempImg, address: "0x7E1960D66FD665ef2B0e94051fE9D74F86637c15" }]
   );
+  const buyNFT = async (tokenId, owner) => {
+    const account = await getMetaMask();
+    const tokenContract = getContract();
+    const ownerOfNFT = await ownerOfToken(tokenId, account, tokenContract);
+    alert(ownerOfNFT);
+    if (ownerOfNFT === owner) {
+      const transfer = await transferToken(account, owner, tokenId, tokenContract);
+      if (transfer) {
+        alert("성공적으로 구매 했습니다.");
+        //metadata 수정
+      }
+    } else {
+      alert("이미 판매가 완료된 NFT입니다.");
+    }
+  }
   return (
     <>
       <PanelHeader
         content={
           <div className="header text-center">
-            <h2 className="title">My Page</h2>
+            <h2 className="title">To The Moon</h2>
             <p className="category">
-              account address
+              NFT Market
             </p>
           </div>
         }
       />
-
-
       <div className="content">
         <Card>
           <CardHeader>
             <CardTitle tag="h4">
               <Row>
-                <Col md={6} />
+                <Col md={3}>
+
+                </Col>
+
                 <Col md={3}>
                   <div className="item-element width-full">
                     <select name="blockchain" value={chain} onChange={(e) => setChain(e.target.value)} className="element-input sort-list width-full" >
-                      <option value="all" selected>Block Chain </option>
+                      <option defaultValue="all">Block Chain </option>
                       {blockChainList.map((el, index) => {
                         return <option key={index} value={el}>{el}</option>
                       })}
@@ -97,7 +99,14 @@ const myPage = () => {
                     </select>
                   </div>
                 </Col>
-
+                <Col md={3}>
+                  <div className="item-element width-full">
+                    <select name="blockchain" value={option} onChange={(e) => setOption(e.target.value)} className="element-input sort-list width-full" >
+                      <option value="htl">Price: high to low </option>
+                      <option value="lth">Price: low to high</option>
+                    </select>
+                  </div>
+                </Col>
               </Row>
             </CardTitle>
           </CardHeader>
@@ -105,7 +114,7 @@ const myPage = () => {
             <Row>
               {
                 NFTList.map((el, index) => {
-                  return <Col md={3} >
+                  return <Col md={3} key={index}>
                     <Card className="padding-none">
                       <CardHeader>
                         <CardBody className="padding-none">
@@ -115,7 +124,19 @@ const myPage = () => {
                               <label>Name:&nbsp;</label>{el.name}
                             </div>
 
+                            <div>
+                              <label>Owner:&nbsp;</label>{el.address}
+                            </div>
+                            <div>
+                              <label>Price:&nbsp;</label>
 
+                            </div>
+                            <div className="item-element">
+                              <input type="button" value="BUY" className="element-btn" onClick={(e) => {
+                                e.preventDefault();
+                                return buyNFT(2, el.address);
+                              }} />
+                            </div>
                           </div>
                         </CardBody>
                       </CardHeader>
@@ -123,17 +144,12 @@ const myPage = () => {
                   </Col>
                 })
               }
-
-
             </Row>
-
-
           </CardBody>
         </Card>
       </div>
-
     </>
   );
 }
 
-export default myPage;
+export default mainPage;

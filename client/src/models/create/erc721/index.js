@@ -17,6 +17,35 @@ const getTonkenId = async (contract) => {
 const newContract = async (web3, address) => {
     return await new web3.eth.Contract(abi, contractAddress, { from: address, gas: 3000000 });
 }
+const transferToken = async (to, from, tokenId, web3) => {
+    const checkSumTo = web3.utils.toChecksumAddress(to);
+    const checkSumFrom = web3.utils.toChecksumAddress(from);
+    try {
+        const contract = await newContract(web3, checkSumFrom);
+        return contract.methods.transferFrom(checkSumFrom, checkSumTo, tokenId).send({ from: checkSumFrom }).on("receipt", (receipt) => {
+            if (receipt) {
+                return receipt;
+            }
+            return false;
+        });
+
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+const ownerOfToken = async (tokenId, address, web3) => {
+    console.log(web3);
+    const checkSumAddress = web3.utils.toChecksumAddress(address);
+    try {
+        const contract = await newContract(web3, checkSumAddress);
+        console.log(contract)
+        return await contract.methods.ownerOf(tokenId).call();
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
 const minting = async (address, web3) => {
     try {
 
@@ -51,4 +80,4 @@ const minting = async (address, web3) => {
     }
 
 }
-export { minting, getContract };
+export { minting, getContract, ownerOfToken, transferToken };
