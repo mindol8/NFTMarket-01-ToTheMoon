@@ -4,7 +4,7 @@ import "../../assets/css/custermized.css"
 const MySwal = withReactContent(Swal)
 
 export default (el) => {
-    MySwal.fire({
+    MySwal.fire({   
         title: <p>Details</p>,
         html:
             <div className="text-align-left">
