@@ -26,11 +26,12 @@ import { getMetaMask, getKaikas } from '../models/getWallet';
 import '../assets/css/custermized.css';
 // core components
 import PanelHeader from 'components/PanelHeader/PanelHeader.js';
-// ipfs function
-import { ipfs, fileFormatingIpfs } from 'controllers/ipfs';
+//ipfs : 모듈화 포기 => 바로 Create.js 에서 작업
+import ipfs from '../controllers/ipfs';
 import axios from 'axios';
 
 const Create = () => {
+	// ipfs : state 값으로 추가
 	const [ipfsHash, setIpfsHash] = useState('');
 	const [file, setFile] = useState(null);
 	const [name, setName] = useState('');
@@ -38,24 +39,13 @@ const Create = () => {
 	const [description, setDescription] = useState('');
 	const [type, setType] = useState('');
 	const [chain, setChain] = useState('');
-	// const [collection, setCollection] = useState("");
+	// const [collection, setCollection] = useState("");  // collection 주석 (나중에 구현)
 	const blockChainList = ['Ethereum', 'Klaytn'];
 	const ethereumTypeList = ['ERC-721', 'ERC-1155'];
 	const klaytnTypeList = ['KIP-17'];
 
 	const fileUploader = useRef(null);
-	const [web3, setWeb3] = useState();
-	useEffect(() => {
-		if (typeof window.ethereum !== 'undefined') {
-			// window.ethereum이 있다면
-			try {
-				const web = new Web3(window.ethereum); // 새로운 web3 객체를 만든다
-				setWeb3(web);
-			} catch (err) {
-				console.log(err);
-			}
-		}
-	}, []);
+
 	const handleClick = (e) => {
 		fileUploader.current.click();
 	};
@@ -69,17 +59,8 @@ const Create = () => {
 			//console.log(e.target.files[0]);
 			setFile(e.target.files[0]);
 		}
-		// ipfs
-		// setIpfsHash(fileFormatingIpfs(e.target.files[0]));
-		const file = e.target.files[0];
-		let reader = new window.FileReader();
-		reader.readAsArrayBuffer(file);
-		reader.onloadend = () => {
-			const buffer = Buffer.from(reader.result);
-			ipfs.add(buffer, (err, ipfsHash) => {
-				setIpfsHash(ipfsHash[0].hash);
-			});
-		};
+		// ipfs 로 올리고 해시값 받기
+
 	};
 
 	const checkElement = () => {
@@ -97,10 +78,30 @@ const Create = () => {
 			const nftContract = getContract();
 			const newNftTokenURI = await minting(account, nftContract);
 			/*
-			1. ipfs에 이미지 파일 등록
-			2.heroku요청을 tokenURI로 nft입력정보 db에 넣음
-
-		  */
+		1. ipfs에 이미지 파일 등록
+		2.heroku요청을 tokenURI로 nft입력정보 db에 넣음
+	    
+	  */
+			axios // ipfs 이부분 수정! 서버로 통신
+				.post('https://mttm1.herokuapp.com/create', {
+					name: name,
+					external_url: link,
+					description: description,
+					chain: chain,
+					type: type,
+					imgURI: `https://ipfs.io/ipfs/${ipfsHash}`,
+					sale: 'false',
+					price: '1eth',
+					account: account,
+					tokenId: newNftTokenURI,
+				})
+				.then((res) => {
+					console.log(res);
+					window.location.replace('/');
+				})
+				.catch((err) => {
+					console.log(err);
+				});
 		} else {
 			alert('필수항목을 모두 채워주세요.');
 		}

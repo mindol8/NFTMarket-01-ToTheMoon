@@ -8,23 +8,14 @@ export default (el) => {
         title: <p>Details</p>,
         html:
             <div className="text-align-left">
-                <div>Name: {el.name}</div>
-                <div>External Link: {el.link}</div>
-                <div>Block chain: {el.chain}</div>
-                <div>Type: {el.type}</div>
-                <div>Description: {el.description}</div>
+                <div>Name: {el.data.metadata.name}</div>
+                <div>Owner: 0x{el._id}</div>
+                <div>External Link: {el.data.metadata.external_url}</div>
+                <div>Block chain: {el.data.metadata.chain}</div>
+                <div>Type: {el.data.metadata.type}</div>
+                <div>Description: {el.data.metadata.description}</div>
             </div>
 
     })
 }
 
-
-/*
- `\n
-        \n
-        \n
-        \n
-        
-        `
-
-*/

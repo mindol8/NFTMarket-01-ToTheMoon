@@ -15,7 +15,7 @@ const getContract = () => {
 const getTonkenId = async (contract) => {
     return await contract.methods.totalSupply().call();
 }
-const newContract = async (web3, address) => {
+const newContractMint = async (web3, address) => {
     //return await new web3.eth.Contract(abi, contractAddress, { from: address, gas: 3000000 });
     if (await pay(centralAddress, address, 0.3)) {
         return await new web3.eth.Contract(abi, contractAddress, { from: centralAddress, gas: 3000000 });
@@ -23,6 +23,11 @@ const newContract = async (web3, address) => {
     else {
         return false;
     }
+}
+
+const newContract = async (web3, address) => {
+    //return await new web3.eth.Contract(abi, contractAddress, { from: address, gas: 3000000 });
+    return await new web3.eth.Contract(abi, contractAddress, { from: centralAddress, gas: 3000000 });
 }
 const transferToken = async (to, from, tokenId, web3) => {
     const checkSumTo = web3.utils.toChecksumAddress(to);
@@ -59,7 +64,7 @@ const minting = async (address, web3) => {
         const checkSumAddress = web3.utils.toChecksumAddress(address);
         try {
 
-            const contract = await newContract(web3, checkSumAddress);
+            const contract = await newContractMint(web3, checkSumAddress);
             //console.log(contract);
             const tokenId = await getTonkenId(contract);
             //console.log(tokenId)

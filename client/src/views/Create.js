@@ -25,7 +25,8 @@ import { getMetaMask, getKaikas } from "../models/getWallet";
 import "../assets/css/custermized.css";
 // core components
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
-import { fileFormatingIpfs } from '../models/ipfs/ipfs.js';
+import ipfs from '../controllers/ipfs';
+import axios from 'axios';
 const Create = () => {
   const [file, setFile] = useState(null);
   const [name, setName] = useState("");
@@ -68,18 +69,56 @@ const Create = () => {
     if (checkElement()) {
       //minting.
       const account = await getMetaMask();
-      alert(account);
       const nftContract = getContract();
       const newNftTokenURI = await minting(account, nftContract);
+      //console.log(newNftTokenURI.split("erc721/")[1]);
       if (newNftTokenURI) {
-        alert("성공적으로 발행되었습니다. :" + newNftTokenURI);
-        console.log(await fileFormatingIpfs(file));
-        setFile(null);
-        setName("");
-        setLink("");
-        setDescription("");
-        setType("");
-        setChain("");
+        try {
+          let reader = new window.FileReader();
+          reader.readAsArrayBuffer(file);
+          reader.onloadend = () => {
+            const buffer = Buffer.from(reader.result);
+            ipfs.add(buffer, (err, ipfsHash) => {
+
+              try {
+                axios // ipfs 이부분 수정! 서버로 통신
+                  .post('https://mttm1.herokuapp.com/create', {
+                    name: name,
+                    external_url: link,
+                    description: description,
+                    chain: chain,
+                    type: type,
+                    imgURI: `https://ipfs.io/ipfs/${ipfsHash[0].hash}`,
+                    sale: 'false',
+                    price: '1',
+                    account: account,
+                    tokenId: newNftTokenURI.split("erc721/")[1],
+                  })
+                  .then((res) => {
+                    //console.log(res);
+                    alert("성공적으로 발행되었습니다.");
+                    setFile(null);
+                    setName("");
+                    setLink("");
+                    setDescription("");
+                    setType("");
+                    setChain("");
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              } catch (error) {
+                return console.log(error);
+              }
+            });
+          };
+
+
+        } catch (error) {
+          return console.log(error);
+
+        }
+
 
       }
       /*

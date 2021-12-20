@@ -20,7 +20,7 @@ import "../assets/css/custermized.css";
 import tempImg from "../assets/img/bg1.jpg";
 import { getContract, ownerOfToken, transferToken } from "../models/create/erc721/index.js";
 import { getMetaMask, getKaikas } from "../models/getWallet";
-
+import axios from "axios";
 const mainPage = () => {
   const [type, setType] = useState("all");
   const [chain, setChain] = useState("all");
@@ -28,19 +28,20 @@ const mainPage = () => {
   const blockChainList = ["Ethereum", "Klaytn"];
   const ethereumTypeList = ["ERC-721", "ERC-1155"];
   const klaytnTypeList = ["KIP-17"];
-  const [NFTList, setNFTList] = useState([
-    { name: "nft1", img: tempImg, address: "0x2C920dF1BF286bcCe7768c240D63F2aD27080757", description: "asdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadf" },
-    { name: "nft2", img: tempImg, address: "0x7E1960D66FD665ef2B0e94051fE9D74F86637c15" },
-    { name: "nft3", img: tempImg, address: "0x7E1960D66FD665ef2B0e94051fE9D74F86637c15" },
-    { name: "nft4", img: tempImg, address: "0x7E1960D66FD665ef2B0e94051fE9D74F86637c15" },
-    { name: "nft5", img: tempImg, address: "0x7E1960D66FD665ef2B0e94051fE9D74F86637c15" },
-    { name: "nft6", img: tempImg, address: "0x7E1960D66FD665ef2B0e94051fE9D74F86637c15" }]
-  );
+  const [nft, setNft] = useState([]);
+  useEffect(() => {
+    axios.get('https://mttm1.herokuapp.com/Main')
+      .then((res) => {
+        setNft(res.data)
+      })
+  }, []);
 
   const buyNFT = async (tokenId, owner, price) => {
+    console.log(tokenId, owner, price);
     const account = await getMetaMask();
     const tokenContract = getContract();
     const ownerOfNFT = await ownerOfToken(tokenId, account, tokenContract);
+
     if (ownerOfNFT === tokenContract.utils.toChecksumAddress(account)) {
       alert("본인 소유 NFT는 구매하실 수 없습니다.");
     } else {
@@ -127,22 +128,22 @@ const mainPage = () => {
           <CardBody>
             <Row>
               {
-                NFTList.map((el, index) => {
+                nft.map((el, index) => {
                   return <Col md={3} key={index}>
                     <Card className="padding-none">
                       <CardHeader>
                         <CardBody className="padding-none">
-                          <img src={el.img} alt="no img" className="nft-market-img" />
+                          <img src={el.data.metadata.imgURI} alt="no img" className="nft-market-img" />
                           <div className="nft-market-item">
                             <div>
-                              <label>Name:&nbsp;</label>{el.name}
+                              <label>Name:&nbsp;</label>{el.data.metadata.name}
                             </div>
 
                             <div>
-                              <label>Owner:&nbsp;</label>{el.address}
+                              <label>TokenId:&nbsp;</label>{el.data.tokenId}
                             </div>
                             <div>
-                              <label>Price:&nbsp;</label>
+                              <label>Price:&nbsp;</label>{el.data.metadata.price} eth
 
                             </div>
                             <div className="main-btn-set">
@@ -156,7 +157,7 @@ const mainPage = () => {
                               <div className="main-btn-set-element">
                                 <input type="button" value="BUY" className="element-btn" onClick={(e) => {
                                   e.preventDefault();
-                                  return buyNFT(el.tokenId, el.address, el.price);
+                                  return buyNFT(el.data.tokenId, el.data.account, el.data.metadata.price);
                                 }} />
                               </div>
 
