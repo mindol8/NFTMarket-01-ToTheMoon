@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useState } from "react";
+import React, { useState, useLayoutEffect } from "react";
 
 
 // reactstrap components
@@ -30,12 +30,14 @@ import {
 
 // core components
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
+import details from "components/details/details.js";
 import "../assets/css/custermized.css";
 import tempImg from "../assets/img/bg1.jpg";
+import { getMetaMask, getKaikas } from "../models/getWallet";
 const myPage = () => {
   const [type, setType] = useState("all");
   const [chain, setChain] = useState("all");
-  const [option, setOption] = useState("htl");//high to low
+  const [accountAddress, setAddress] = useState("");
   const blockChainList = ["Ethereum", "Klaytn"];
   const ethereumTypeList = ["ERC-721", "ERC-1155"];
   const klaytnTypeList = ["KIP-17"];
@@ -47,6 +49,8 @@ const myPage = () => {
     { name: "nft5", img: tempImg },
     { name: "nft6", img: tempImg }]
   );
+
+
   return (
     <>
       <PanelHeader
@@ -54,7 +58,7 @@ const myPage = () => {
           <div className="header text-center">
             <h2 className="title">My Page</h2>
             <p className="category">
-              account address
+              {accountAddress}
             </p>
           </div>
         }
@@ -105,7 +109,7 @@ const myPage = () => {
             <Row>
               {
                 NFTList.map((el, index) => {
-                  return <Col md={3} >
+                  return <Col md={3} key={index} >
                     <Card className="padding-none">
                       <CardHeader>
                         <CardBody className="padding-none">
@@ -118,7 +122,7 @@ const myPage = () => {
                               <div className="main-btn-set-element main-btn-set-element-rightspace">
                                 <input type="button" value="Detail" className="element-btn" onClick={(e) => {
                                   e.preventDefault();
-
+                                  return details(el);
                                 }} />
                               </div>
 

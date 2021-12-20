@@ -16,5 +16,9 @@
   "bugs": {
     "url": "https://github.com/codestates/NFTMarket-01-ToTheMoon/issues"
   },
-  "homepage": "https://github.com/codestates/NFTMarket-01-ToTheMoon#readme"
+  "homepage": "https://github.com/codestates/NFTMarket-01-ToTheMoon#readme",
+  "dependencies": {
+    "sweetalert2": "^11.3.0",
+    "sweetalert2-react-content": "^4.2.0"
+  }
 }

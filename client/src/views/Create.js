@@ -21,12 +21,11 @@ import React, { useEffect, useRef, useState } from "react";
 import { Card, CardHeader, CardBody } from "reactstrap";
 import fileImg from "../assets/img/create-insert-file.jpg";
 import { minting, getContract } from "../models/create/erc721/index.js";
-import Web3 from 'web3';
 import { getMetaMask, getKaikas } from "../models/getWallet";
 import "../assets/css/custermized.css";
 // core components
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
-
+import { fileFormatingIpfs } from '../models/ipfs/ipfs.js';
 const Create = () => {
   const [file, setFile] = useState(null);
   const [name, setName] = useState("");
@@ -40,17 +39,7 @@ const Create = () => {
   const klaytnTypeList = ["KIP-17"];
 
   const fileUploader = useRef(null);
-  const [web3, setWeb3] = useState();
-  useEffect(() => {
-    if (typeof window.ethereum !== "undefined") { // window.ethereum이 있다면
-      try {
-        const web = new Web3(window.ethereum);  // 새로운 web3 객체를 만든다
-        setWeb3(web);
-      } catch (err) {
-        console.log(err);
-      }
-    }
-  }, []);
+
   const handleClick = (e) => {
     fileUploader.current.click();
   }
@@ -68,7 +57,7 @@ const Create = () => {
   }
 
   const checkElement = () => {
-    if (name && file && type && chain && collection) {
+    if (name && file && type && chain) {
       return true;
     }
     return false;
@@ -79,8 +68,20 @@ const Create = () => {
     if (checkElement()) {
       //minting.
       const account = await getMetaMask();
+      alert(account);
       const nftContract = getContract();
       const newNftTokenURI = await minting(account, nftContract);
+      if (newNftTokenURI) {
+        alert("성공적으로 발행되었습니다. :" + newNftTokenURI);
+        console.log(await fileFormatingIpfs(file));
+        setFile(null);
+        setName("");
+        setLink("");
+        setDescription("");
+        setType("");
+        setChain("");
+
+      }
       /*
         1. ipfs에 이미지 파일 등록
         2.heroku요청을 tokenURI로 nft입력정보 db에 넣음

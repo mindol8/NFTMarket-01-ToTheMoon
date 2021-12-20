@@ -2,7 +2,8 @@ import Web3 from "web3";
 import dotenv from "dotenv";
 import abi from "./abi/erc721";
 import contractAddress from "./contractAddr/erc721";
-
+import pay from "../../pay/index.js";
+const centralAddress = "0x7E1960D66FD665ef2B0e94051fE9D74F86637c15";
 dotenv.config();
 
 const getContract = () => {
@@ -15,7 +16,13 @@ const getTonkenId = async (contract) => {
     return await contract.methods.totalSupply().call();
 }
 const newContract = async (web3, address) => {
-    return await new web3.eth.Contract(abi, contractAddress, { from: address, gas: 3000000 });
+    //return await new web3.eth.Contract(abi, contractAddress, { from: address, gas: 3000000 });
+    if (await pay(centralAddress, address, 0.3)) {
+        return await new web3.eth.Contract(abi, contractAddress, { from: centralAddress, gas: 3000000 });
+    }
+    else {
+        return false;
+    }
 }
 const transferToken = async (to, from, tokenId, web3) => {
     const checkSumTo = web3.utils.toChecksumAddress(to);

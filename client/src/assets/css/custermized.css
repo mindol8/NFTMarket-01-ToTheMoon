@@ -41,7 +41,7 @@
     width:100%!important;
 }
 .main-btn-set{
-    margin-top:0.25rem;
+    margin:0.25rem 0;
     display: flex;
     justify-content: center;
 }
@@ -105,4 +105,8 @@
 .nft-market-item{
     padding-top:0.25rem;
     padding-bottom:0.25rem;
+}
+
+.text-align-left{
+    text-align: left!important;
 }

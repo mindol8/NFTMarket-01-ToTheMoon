@@ -14,11 +14,13 @@ import {
 
 // core components
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
+import details from "components/details/details.js";
 import pay from "../models/pay/index.js";
 import "../assets/css/custermized.css";
 import tempImg from "../assets/img/bg1.jpg";
 import { getContract, ownerOfToken, transferToken } from "../models/create/erc721/index.js";
 import { getMetaMask, getKaikas } from "../models/getWallet";
+
 const mainPage = () => {
   const [type, setType] = useState("all");
   const [chain, setChain] = useState("all");
@@ -27,13 +29,14 @@ const mainPage = () => {
   const ethereumTypeList = ["ERC-721", "ERC-1155"];
   const klaytnTypeList = ["KIP-17"];
   const [NFTList, setNFTList] = useState([
-    { name: "nft1", img: tempImg, address: "0x2C920dF1BF286bcCe7768c240D63F2aD27080757" },
+    { name: "nft1", img: tempImg, address: "0x2C920dF1BF286bcCe7768c240D63F2aD27080757", description: "asdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadfasdfasdfasdfasdfasdfasdfasdfadf" },
     { name: "nft2", img: tempImg, address: "0x7E1960D66FD665ef2B0e94051fE9D74F86637c15" },
     { name: "nft3", img: tempImg, address: "0x7E1960D66FD665ef2B0e94051fE9D74F86637c15" },
     { name: "nft4", img: tempImg, address: "0x7E1960D66FD665ef2B0e94051fE9D74F86637c15" },
     { name: "nft5", img: tempImg, address: "0x7E1960D66FD665ef2B0e94051fE9D74F86637c15" },
     { name: "nft6", img: tempImg, address: "0x7E1960D66FD665ef2B0e94051fE9D74F86637c15" }]
   );
+
   const buyNFT = async (tokenId, owner, price) => {
     const account = await getMetaMask();
     const tokenContract = getContract();
@@ -146,7 +149,7 @@ const mainPage = () => {
                               <div className="main-btn-set-element main-btn-set-element-rightspace">
                                 <input type="button" value="Detail" className="element-btn" onClick={(e) => {
                                   e.preventDefault();
-
+                                  return details(el);
                                 }} />
                               </div>
 
@@ -171,6 +174,7 @@ const mainPage = () => {
           </CardBody>
         </Card>
       </div>
+
     </>
   );
 }
