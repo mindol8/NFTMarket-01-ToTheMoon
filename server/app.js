@@ -33,7 +33,12 @@ MongoClient.connect('mongodb+srv://jun:1234@cluster0.zjit4.mongodb.net/myFirstDa
 })
 //test/
 app.get('/',(req,res)=>{
-    res.send('hello ')
+    res.send('제발!!12345')
+})
+app.post('/test1',(req,res)=>{
+  const id = req.body.id;
+  console.log(id);
+  res.send('성공!')
 })
 
 //metadata를 생성해서 DB에 저장하는 메서드를 생성시켜보자.
@@ -75,28 +80,37 @@ app.post('/create',(req,res)=>{
        req.body.price
        )
 
+       console.log(input);
+
        //DB에 이미 한번 저장이 되어있는 지 확인하자  -- 저장되어있으면 update, 새로운사람이면 insertOne을 진행하자.
         //account:[[tokenId,type],[tokenId,type],[tokenId,type]....]
         //2. {type : {toeknId:metadata}}
        
        if(account !== undefined){
         db.collection('NFTPOST').find({'account':account}).toArray((error,result)=>{
+          
           if(result[0] !== undefined){
+            console.log(1);
             //DB에 이미 한번 저장이 되어있는 상태면 추가해주는 쿼리를 날린다.
             db.collection('NFTPOST').update({account: account},{"$push" :{"tokenIds":{"tokenId":tokenId,'type':input.type}},
+            
           });
           //metadata저장하는 쿼리
-              db.collection('Types').insertOne({type:input.type,data:{tokenId:tokenId,metadata:input}})
+              db.collection('Types').insertOne({type:input.type,data:{account:account,tokenId:tokenId,metadata:input}}) 
+              //res.send('tokenId && metadata input success')
           }else{
              //처음이라면 저장해주자.
                 db.collection('NFTPOST').insertOne({account:account,tokenIds:[{tokenId:tokenId,type:input.type}]},(error,result)=>{
                  console.log(result);
-        });
+                 });
           //metadata저장하는 쿼리
-             db.collection('Types').insertOne({type:input.type,data:{tokenId:tokenId,metadata:input}})
+             db.collection('Types').insertOne({type:input.type,data:{account:account,tokenId:tokenId,metadata:input}})
+             //res.send('tokenId && metadata input success')
           }
         })
        }
+        res.send('success');
+
 })
 
 
@@ -114,52 +128,75 @@ app.get('/erc721/:tokenId',(req,res)=>{
         res.send(result[0].data.metadata);
       }
     })
+      res.send('loading fail');
 })
 
 
+
 //소유권이전으로인해서 특정 값을 삭제하고 삭제 후 특정 계정에 값을 옮겨주는 작업.
+function deleteSeller(seller,tokenId){
+  db.collection('NFTPOST').update( 
+    {
+        "account" : seller
+    } ,
+    {
+      "$pull" : {
+            "tokenIds":{"tokenId":Number(tokenId)} 
+      }
+    }
+  )
+ }
+
+ function changeOwner(seller, buyer){
+  db.collection('Types').update( 
+    {
+        "data.account" : seller
+    } ,
+    {
+      "$set" : {
+            "data.account": buyer
+      }
+    }
+  )
+  
+ }
 
 app.post('/buy',(req,res)=>{
     
- const buyer = req.body.buyer;
- const seller = req.body.seller;
+ const buyer = req.body.buyer.toLowerCase();
+ const seller = req.body.seller.toLowerCase();
  const tokenId = req.body.tokenId;
  const type = req.body.type;
 
 
 
+ 
 
-//특정배열의 요소에서 삭제하는 것!! 
-// seller의 tokenId를 삭제한다.
-db.collection('NFTPOST').update( 
-  {
-      "account" : seller
-  } ,
-  {
-    "$pull" : {
-          "tokenIds":{"tokenId":tokenId} 
-    }
-  }
-)
 
 
 //buyer의 Db에 tokenId를 추가시킨다.
 if(buyer !== undefined){
   db.collection('NFTPOST').find({'account':buyer}).toArray((error,result)=>{
+   
     if(result[0] !== undefined){
+      deleteSeller(seller,tokenId);
+      changeOwner(seller,buyer)
       //DB에 이미 한번 저장이 되어있는 상태면 추가해주는 쿼리를 날린다.
-      db.collection('NFTPOST').update({account: buyer},{"$push" :{"tokenIds":{"tokenId":tokenId,'type':type}},
+      db.collection('NFTPOST').update({account: buyer},{"$push" :{"tokenIds":{"tokenId":Number(tokenId),'type':type}},
     });
     
     }else{
        //처음이라면 저장해주자.
-          db.collection('NFTPOST').insertOne({account:buyer,tokenIds:[{tokenId:tokenId,type:type}]},(error,result)=>{
+       deleteSeller(seller,tokenId);
+      changeOwner(seller,buyer)
+          db.collection('NFTPOST').insertOne({account:buyer,tokenIds:[{tokenId:Number(tokenId),type:type}]},(error,result)=>{
            console.log(result);
   });
-    
     }
   })
  }
+
+ res.send('success');
 
 // db.collection('NFTPOST').update( 
 //   {
@@ -184,5 +221,57 @@ if(buyer !== undefined){
 //     res.send(result);
 //   }
 // })
+
+})
+
+
+app.get('/Main',(req,res)=>{
+  db.collection('Types').find({}).toArray((err,result)=>{
+    console.log(result[0].data.tokenId);
+    res.send(result);
+  })
+})
+
+
+app.post('/mypage',(req,res)=>{
+
+  
+  const account = req.body.account
+  
+
+  console.log(account);
+  
+  const change = account.toLowerCase();
+  console.log(change);
+  
+  const mypageData = [];
+  db.collection('NFTPOST').find({account:change}).toArray((err,result)=>{
+   
+
+    if(result[0] !== undefined){
+
+
+    for(let i=0; i<result[0].tokenIds.length; i++){
+           mypageData.push(result[0].tokenIds[i].tokenId)
+    }
+
+    const sendData = [];
+
+    for(let i=0; i<mypageData.length; i++){
+      db.collection('Types').find({'data.tokenId':mypageData[i]}).toArray((err,result)=>{
+       sendData.push(...result);
+      })
+    }
+
+    setTimeout(()=>{
+     res.send(sendData)
+    },1000)
+    
+  }else{
+    res.send([]);
+  }
+  })
+
+
 
 })
