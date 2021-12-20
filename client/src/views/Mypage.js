@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 
 // reactstrap components
@@ -37,39 +37,39 @@ import Web3 from 'web3';
 import { getMetaMask, getKaikas } from '../models/getWallet';
 import axios from "axios";
 const myPage = () => {
-	const [web3, setWeb3] = useState();
+  const [web3, setWeb3] = useState();
   const [account, setAccount] = useState();
-  useEffect(async() => {
-		if (typeof window.ethereum !== 'undefined') {
-			// window.ethereum이 있다면
-			try {
-				const web = new Web3(window.ethereum); // 새로운 web3 객체를 만든다
-				setWeb3(web);
+  useEffect(async () => {
+    if (typeof window.ethereum !== 'undefined') {
+      // window.ethereum이 있다면
+      try {
+        const web = new Web3(window.ethereum); // 새로운 web3 객체를 만든다
+        setWeb3(web);
         const account = getMetaMask();
-       await account.then((res=>{
-        setAccount(res);
-    axios.post('https://mttm1.herokuapp.com/mypage',{
-    account:res
-  }).then((res)=>{
-    console.log(res);
-    setNFTList(res.data)
-  })
+        await account.then((res => {
+          setAccount(res);
+          axios.post('https://mttm1.herokuapp.com/mypage', {
+            account: res
+          }).then((res) => {
+            //console.log(res);
+            setNFTList(res.data)
+          })
 
-       }))
-      
+        }))
 
-       
-			} catch (err) {
-				console.log(err);
-			}
-		}
-	}, []);
 
-  
- 
-  
 
- 
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }, []);
+
+
+
+
+
+
   //  console.log(NFTList);
 
   const [type, setType] = useState("all");
@@ -157,8 +157,8 @@ const myPage = () => {
                             <div className="main-btn-set">
                               <div className="main-btn-set-element main-btn-set-element-rightspace">
                                 <input type="button" value="Detail" className="element-btn" onClick={(e) => {
-                                    e.preventDefault();
-                                   return details(el);
+                                  e.preventDefault();
+                                  return details(el);
                                 }} />
                               </div>
 

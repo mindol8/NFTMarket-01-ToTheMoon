@@ -40,8 +40,8 @@ const mainPage = () => {
     console.log(tokenId, owner, price);
     const account = await getMetaMask();
     const tokenContract = getContract();
-    const ownerOfNFT = await ownerOfToken(tokenId, account, tokenContract);
-
+    const ownerOfNFT = String(await ownerOfToken(tokenId, account, tokenContract)).toLowerCase();
+    console.log(ownerOfNFT)
     if (ownerOfNFT === tokenContract.utils.toChecksumAddress(account)) {
       alert("본인 소유 NFT는 구매하실 수 없습니다.");
     } else {
