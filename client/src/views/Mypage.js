@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React, { useState, useLayoutEffect } from "react";
+import React, { useState,useEffect } from "react";
 
 
 // reactstrap components
@@ -30,27 +30,56 @@ import {
 
 // core components
 import PanelHeader from "components/PanelHeader/PanelHeader.js";
-import details from "components/details/details.js";
 import "../assets/css/custermized.css";
 import tempImg from "../assets/img/bg1.jpg";
-import { getMetaMask, getKaikas } from "../models/getWallet";
+import details from "components/details/details.js";
+import Web3 from 'web3';
+import { getMetaMask, getKaikas } from '../models/getWallet';
+import axios from "axios";
 const myPage = () => {
+	const [web3, setWeb3] = useState();
+  const [account, setAccount] = useState();
+  useEffect(async() => {
+		if (typeof window.ethereum !== 'undefined') {
+			// window.ethereum이 있다면
+			try {
+				const web = new Web3(window.ethereum); // 새로운 web3 객체를 만든다
+				setWeb3(web);
+        const account = getMetaMask();
+       await account.then((res=>{
+        setAccount(res);
+    axios.post('https://mttm1.herokuapp.com/mypage',{
+    account:res
+  }).then((res)=>{
+    console.log(res);
+    setNFTList(res.data)
+  })
+
+       }))
+      
+
+       
+			} catch (err) {
+				console.log(err);
+			}
+		}
+	}, []);
+
+  
+ 
+  
+
+ 
+  //  console.log(NFTList);
+
   const [type, setType] = useState("all");
   const [chain, setChain] = useState("all");
-  const [accountAddress, setAddress] = useState("");
+  const [option, setOption] = useState("htl");//high to low
   const blockChainList = ["Ethereum", "Klaytn"];
   const ethereumTypeList = ["ERC-721", "ERC-1155"];
   const klaytnTypeList = ["KIP-17"];
-  const [NFTList, setNFTList] = useState([
-    { name: "nft1", img: tempImg, address: "0x1234" },
-    { name: "nft2", img: tempImg },
-    { name: "nft3", img: tempImg },
-    { name: "nft4", img: tempImg },
-    { name: "nft5", img: tempImg },
-    { name: "nft6", img: tempImg }]
+  const [NFTList, setNFTList] = useState([]
   );
-
-
   return (
     <>
       <PanelHeader
@@ -58,7 +87,7 @@ const myPage = () => {
           <div className="header text-center">
             <h2 className="title">My Page</h2>
             <p className="category">
-              {accountAddress}
+              {account}
             </p>
           </div>
         }
@@ -109,20 +138,27 @@ const myPage = () => {
             <Row>
               {
                 NFTList.map((el, index) => {
-                  return <Col md={3} key={index} >
+                  return <Col md={3} >
                     <Card className="padding-none">
                       <CardHeader>
                         <CardBody className="padding-none">
-                          <img src={el.img} alt="no img" className="nft-market-img" />
+                          <img src={el.data.metadata.imgURI} alt="no img" className="nft-market-img" />
                           <div className="nft-market-item">
                             <div>
-                              <label>Name:&nbsp;</label>{el.name}
+                              <label>Name:&nbsp;</label>{el.data.metadata.name}
+                            </div>
+                            <div>
+                              <label>TokenId:&nbsp;</label>{el.data.tokenId}
+                            </div>
+                            <div>
+                              <label>Price:&nbsp;</label>{el.data.metadata.price} eth
+
                             </div>
                             <div className="main-btn-set">
                               <div className="main-btn-set-element main-btn-set-element-rightspace">
                                 <input type="button" value="Detail" className="element-btn" onClick={(e) => {
-                                  e.preventDefault();
-                                  return details(el);
+                                    e.preventDefault();
+                                   return details(el);
                                 }} />
                               </div>
 
